@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    [SerializeField] private int width;
-    [SerializeField] private int height;
+    [SerializeField, Range(1,100)] private int width;
+    [SerializeField, Range(1,100)] private int height;
     [SerializeField] private GameObject grassPrefab;
     [SerializeField] private GameObject waterPrefab;
 
@@ -15,10 +15,14 @@ public class TerrainGenerator : MonoBehaviour
     private float xOffset;
     private float yOffset;
 
+    [SerializeField, HideInInspector]private Texture2D perlinNoiseTexture;
+
     [ExecuteInEditMode]
     public void GenerateTerrain()
     {
         DestroyTerrain();
+
+        perlinNoiseTexture = new Texture2D(width,height);
 
         xOffset = Random.Range(0f, 999999f);
         yOffset = Random.Range(0f, 999999f);
@@ -31,6 +35,10 @@ public class TerrainGenerator : MonoBehaviour
                 var yCoord = (float)y / height * perlinNoiseZoomScale + yOffset;
 
                 var sample = Mathf.PerlinNoise(xCoord, yCoord);
+
+                var textureColor = new Color(sample,sample,sample);
+                perlinNoiseTexture.SetPixel(x, y ,textureColor);
+
                 var newPos = new Vector3(x,0,y);
                 GameObject newBlock = null;
 
@@ -45,6 +53,9 @@ public class TerrainGenerator : MonoBehaviour
 
                 _blocks.Add(newBlock);
                 newBlock.transform.parent = transform;
+                perlinNoiseTexture.filterMode = FilterMode.Point;
+                perlinNoiseTexture.wrapMode = TextureWrapMode.Clamp;
+                perlinNoiseTexture.Apply();
             }
         }
     }
@@ -53,6 +64,8 @@ public class TerrainGenerator : MonoBehaviour
     {
         if (_blocks.Count <= 0) return;
 
+        perlinNoiseTexture = null;
+
         foreach (var Block in _blocks)
         {
             Block.GetComponent<Block>().DestroyBlock();
@@ -60,4 +73,8 @@ public class TerrainGenerator : MonoBehaviour
 
         _blocks.Clear();
     }
+
+    public Texture2D GetTexture => perlinNoiseTexture;
+    public int textureWidth => width;
+    public int textureHeight => height;
 }
