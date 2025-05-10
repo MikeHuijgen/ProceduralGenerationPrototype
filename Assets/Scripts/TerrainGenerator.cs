@@ -7,7 +7,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField, Range(1,100)] private int height;
     [SerializeField] private float perlinNoiseZoomScale;
     [SerializeField] private float yMagnitude = 2; 
-    [SerializeField] private List<TerrainRuleSet> terrainRuleSets = new List<TerrainRuleSet>();
+    [SerializeField] private GenerationRuleSet generationRuleSet;
 
 
     [SerializeField]private List<GameObject> _blocks = new List<GameObject>();
@@ -45,7 +45,7 @@ public class TerrainGenerator : MonoBehaviour
                 var newPos = new Vector3(x, Mathf.RoundToInt(newYMagnitude),z);
                 GameObject newBlock = null;
 
-                foreach (var rule in terrainRuleSets)
+                foreach (var rule in generationRuleSet.terrainRules)
                 {
                     if (sample <= rule.ruleHight)
                     {
