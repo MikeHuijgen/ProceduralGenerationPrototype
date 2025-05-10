@@ -44,7 +44,6 @@ public class TerrainGenerator : MonoBehaviour
 
                 var newPos = new Vector3(x, Mathf.RoundToInt(newYMagnitude),z);
                 GameObject newBlock = null;
-                var ruleHeight = 0f;
 
                 foreach (var rule in terrainRuleSets)
                 {
@@ -53,9 +52,6 @@ public class TerrainGenerator : MonoBehaviour
                         newBlock = Instantiate(rule.terrainPrefab, newPos, Quaternion.identity);
                         break;
                     }
-
-                    //als sample kleiner is dan ruleheight dan pakt hij die
-                    // daar na kijkt hij naar de andere rule height
                 }
 
                 perlinNoiseTexture.filterMode = FilterMode.Point;
