@@ -6,7 +6,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField, Range(1,100)] private int width;
     [SerializeField, Range(1,100)] private int height;
     [SerializeField] private float perlinNoiseZoomScale;
-    [SerializeField] private float yMagnitude = 2; 
+    [SerializeField] private float yMagnitude = 2;  
     [SerializeField] private GenerationRuleSet generationRuleSet;
 
 
@@ -61,6 +61,35 @@ public class TerrainGenerator : MonoBehaviour
                 _blocks.Add(newBlock);
                 if (newBlock == null) continue;
                 newBlock.transform.parent = transform;
+            }
+        }
+
+        foreach (var block in _blocks)
+        {
+            if (block == null) continue;
+
+            if (block.TryGetComponent<Block>(out var component))
+            {
+                if (component == null || component.GetBlockType != Block.BlockType.Grass) continue;
+            }
+
+
+            var allowDecorationNumber = Random.Range(0f,1f);
+            var allowDecoration = allowDecorationNumber < generationRuleSet.decorationAppearanceAmount;
+
+            if(!allowDecoration) continue;
+
+            var randomNumber = Random.Range(0f,1f);
+            GameObject newDecoration = null;
+
+            foreach (var decorations in generationRuleSet.decorations)
+            {
+                if (randomNumber <= decorations.appearanceRate)
+                {
+                    newDecoration = Instantiate(decorations.decorationPrefab, new Vector3(block.transform.position.x,block.transform.position.y + .5f,block.transform.position.z), Quaternion.identity);
+                    newDecoration.transform.parent = block.transform;
+                    break;
+                }
             }
         }
     }
