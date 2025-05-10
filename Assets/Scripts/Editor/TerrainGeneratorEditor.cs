@@ -15,7 +15,17 @@ public class TerrainGeneratorEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
+        GUILayout.Space(5);
+
+        if(GUILayout.Button("Generate terrain", GUILayout.Height(30)))
+        {
+            _terrainGenerator.GenerateTerrain();
+        }
+
+        if(GUILayout.Button("Destroy terrain", GUILayout.Height(30)))
+        {
+            _terrainGenerator.DestroyTerrain();
+        }
 
         perlinNoiseTexture = _terrainGenerator.GetTexture;
 
@@ -37,16 +47,6 @@ public class TerrainGeneratorEditor : Editor
             EditorGUI.DrawPreviewTexture(rect, perlinNoiseTexture, null, ScaleMode.StretchToFill);
         }
 
-        GUILayout.Space(5);
-
-        if(GUILayout.Button("Generate terrain", GUILayout.Height(30)))
-        {
-            _terrainGenerator.GenerateTerrain();
-        }
-
-        if(GUILayout.Button("Destroy terrain", GUILayout.Height(30)))
-        {
-            _terrainGenerator.DestroyTerrain();
-        }
+        base.OnInspectorGUI();
     }
 }

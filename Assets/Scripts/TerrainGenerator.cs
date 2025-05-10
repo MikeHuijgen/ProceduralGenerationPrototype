@@ -5,12 +5,11 @@ public class TerrainGenerator : MonoBehaviour
 {
     [SerializeField, Range(1,100)] private int width;
     [SerializeField, Range(1,100)] private int height;
-    [SerializeField] private GameObject grassPrefab;
-    [SerializeField] private GameObject waterPrefab;
+    [SerializeField] private List<TerrainRuleSet> terrainRuleSets = new List<TerrainRuleSet>();
 
     [SerializeField] private float perlinNoiseZoomScale;
 
-    private List<GameObject> _blocks = new List<GameObject>();
+    [SerializeField]private List<GameObject> _blocks = new List<GameObject>();
 
     private float xOffset;
     private float yOffset;
@@ -29,30 +28,30 @@ public class TerrainGenerator : MonoBehaviour
 
         for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int z = 0; z < height; z++)
             {
                 var xCoord = (float)x / width * perlinNoiseZoomScale + xOffset;
-                var yCoord = (float)y / height * perlinNoiseZoomScale + yOffset;
+                var yCoord = (float)z / height * perlinNoiseZoomScale + yOffset;
 
                 var sample = Mathf.PerlinNoise(xCoord, yCoord);
 
                 var textureColor = new Color(sample,sample,sample);
-                perlinNoiseTexture.SetPixel(x, y ,textureColor);
+                perlinNoiseTexture.SetPixel(x, z ,textureColor);
 
-                var newPos = new Vector3(x,0,y);
+                var newPos = new Vector3(x,0,z);
                 GameObject newBlock = null;
 
-                if (sample > .4f)
+                foreach (var rule in terrainRuleSets)
                 {
-                    newBlock = Instantiate(grassPrefab, newPos, Quaternion.identity);
-                }
-                else
-                {
-                    newBlock = Instantiate(waterPrefab, newPos, Quaternion.identity);                   
+                    if (sample >= rule.ruleHight)
+                    {
+                        newBlock = Instantiate(rule.terrainPrefab, newPos, Quaternion.identity);
+                        break;
+                    }
                 }
 
                 _blocks.Add(newBlock);
-                newBlock.transform.parent = transform;
+                //newBlock.transform.parent = transform;
                 perlinNoiseTexture.filterMode = FilterMode.Point;
                 perlinNoiseTexture.wrapMode = TextureWrapMode.Clamp;
                 perlinNoiseTexture.Apply();
@@ -62,13 +61,16 @@ public class TerrainGenerator : MonoBehaviour
 
     public void DestroyTerrain()
     {
+        perlinNoiseTexture = null;
         if (_blocks.Count <= 0) return;
 
-        perlinNoiseTexture = null;
-
-        foreach (var Block in _blocks)
+        foreach (var block in _blocks)
         {
-            Block.GetComponent<Block>().DestroyBlock();
+            if (block == null)
+            {
+                continue;
+            }
+            block.GetComponent<Block>().DestroyBlock();
         }
 
         _blocks.Clear();
