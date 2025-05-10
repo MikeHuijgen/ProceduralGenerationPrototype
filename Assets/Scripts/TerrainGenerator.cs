@@ -44,21 +44,27 @@ public class TerrainGenerator : MonoBehaviour
 
                 var newPos = new Vector3(x, Mathf.RoundToInt(newYMagnitude),z);
                 GameObject newBlock = null;
+                var ruleHeight = 0f;
 
                 foreach (var rule in terrainRuleSets)
                 {
-                    if (sample >= rule.ruleHight)
+                    if (sample <= rule.ruleHight)
                     {
                         newBlock = Instantiate(rule.terrainPrefab, newPos, Quaternion.identity);
                         break;
                     }
+
+                    //als sample kleiner is dan ruleheight dan pakt hij die
+                    // daar na kijkt hij naar de andere rule height
                 }
 
-                _blocks.Add(newBlock);
-                //newBlock.transform.parent = transform;
                 perlinNoiseTexture.filterMode = FilterMode.Point;
                 perlinNoiseTexture.wrapMode = TextureWrapMode.Clamp;
                 perlinNoiseTexture.Apply();
+
+                _blocks.Add(newBlock);
+                if (newBlock == null) continue;
+                newBlock.transform.parent = transform;
             }
         }
     }
