@@ -26,4 +26,5 @@ MonoBehaviour:
     appearanceRate: 0.1
   - decorationPrefab: {fileID: 3196694052689569184, guid: 37dbbe4565b8a844c87a819a46e1a71c, type: 3}
     appearanceRate: 0.5
-  decorationAppearanceAmount: 0.6
+  decorationAppearanceAmount: 1
+  yMagnitude: 10

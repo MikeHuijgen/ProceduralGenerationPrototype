@@ -6,11 +6,10 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField, Range(1,100)] private int width;
     [SerializeField, Range(1,100)] private int height;
     [SerializeField] private float perlinNoiseZoomScale;
-    [SerializeField] private float yMagnitude = 2;  
     [SerializeField] private GenerationRuleSet generationRuleSet;
 
 
-    [SerializeField]private List<GameObject> _blocks = new List<GameObject>();
+    private List<GameObject> _blocks = new List<GameObject>();
 
     private float xOffset;
     private float zOffset;
@@ -27,6 +26,13 @@ public class TerrainGenerator : MonoBehaviour
         xOffset = Random.Range(0f, 999999f);
         zOffset = Random.Range(0f, 999999f);
 
+        InstantiateTerrainBlocks();
+
+        InstantiateTerrainDecoration();
+    }
+
+    private void InstantiateTerrainBlocks()
+    {
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < height; z++)
@@ -35,7 +41,7 @@ public class TerrainGenerator : MonoBehaviour
                 var zCoord = (float)z / height * perlinNoiseZoomScale + zOffset;
 
                 var sample = Mathf.PerlinNoise(xCoord, zCoord);
-                var newYMagnitude = sample * yMagnitude;
+                var newYMagnitude = sample * generationRuleSet.yMagnitude;
 
 
 
@@ -63,7 +69,10 @@ public class TerrainGenerator : MonoBehaviour
                 newBlock.transform.parent = transform;
             }
         }
+    }
 
+    private void InstantiateTerrainDecoration()
+    {
         foreach (var block in _blocks)
         {
             if (block == null) continue;
@@ -91,7 +100,7 @@ public class TerrainGenerator : MonoBehaviour
                     break;
                 }
             }
-        }
+        }    
     }
 
     public void DestroyTerrain()
