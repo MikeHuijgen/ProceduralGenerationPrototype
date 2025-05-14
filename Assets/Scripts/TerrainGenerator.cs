@@ -9,7 +9,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private GenerationRuleSet generationRuleSet;
 
 
-    private List<GameObject> _blocks = new List<GameObject>();
+    private List<Block> _blocks = new List<Block>();
 
     private float xOffset;
     private float zOffset;
@@ -47,30 +47,26 @@ public class TerrainGenerator : MonoBehaviour
                 var textureColor = new Color(sample,sample,sample);
                 perlinNoiseTexture.SetPixel(x, z ,textureColor);
 
+                var correctBlock = GetCorrectBlockByRuleHeight(sample);
+
                 for (int y = newYMagnitude; y > 0; y--)
                 {
-                    GameObject newBlock = null;
                     var newPos = new Vector3(x, y, z);
 
                     if (y == newYMagnitude)
                     {
-                        foreach (var rule in generationRuleSet.terrainRules)
-                        {
-                            if (sample <= rule.ruleHight)
-                            {
-                                newBlock = Instantiate(rule.terrainPrefab, newPos, Quaternion.identity);
-                                break;
-                            }
-                        }                   
+                        InstantiateBlock(correctBlock,newPos);
+                        continue;
+                    }
+                    else if (correctBlock.GetBlockType == Block.BlockType.Water || correctBlock.GetBlockType == Block.BlockType.DeepWater)
+                    {
+                        InstantiateBlock(correctBlock,newPos);
+                        continue;
                     }
                     else
                     {
-                        newBlock = Instantiate(generationRuleSet.underGroundBlock, newPos, Quaternion.identity);    
+                        InstantiateBlock(generationRuleSet.underGroundBlock, newPos);
                     }
-
-                    _blocks.Add(newBlock);
-                    if (newBlock == null) continue;
-                    newBlock.transform.parent = transform;
                 }
             }
         }
@@ -80,17 +76,34 @@ public class TerrainGenerator : MonoBehaviour
         perlinNoiseTexture.Apply();
     }
 
+    private void InstantiateBlock(Block targetBlock, Vector3 position)
+    {
+        var newBlock = Instantiate(targetBlock, position, Quaternion.identity);
+        _blocks.Add(newBlock);
+        if (newBlock == null) return;
+        newBlock.transform.parent = transform;        
+    }
+
+    private Block GetCorrectBlockByRuleHeight(float perlinNoiseSample)
+    {
+        Block correctBlock = null;
+        foreach (var rule in generationRuleSet.terrainRules)
+        {
+            if (perlinNoiseSample <= rule.ruleHight)
+            {
+                correctBlock = rule.terrainPrefab;
+                break;
+            }
+        } 
+
+        return correctBlock;
+    }
+
     private void InstantiateTerrainDecoration()
     {
         foreach (var block in _blocks)
         {
-            if (block == null) continue;
-
-            if (block.TryGetComponent<Block>(out var component))
-            {
-                if (component == null || component.GetBlockType != Block.BlockType.Grass) continue;
-            }
-
+            if (block == null || block.GetBlockType != Block.BlockType.Grass) continue;
 
             var allowDecorationNumber = Random.Range(0f,1f);
             var allowDecoration = allowDecorationNumber < generationRuleSet.decorationAppearanceAmount;
@@ -123,7 +136,7 @@ public class TerrainGenerator : MonoBehaviour
             {
                 continue;
             }
-            block.GetComponent<Block>().DestroyBlock();
+            block.DestroyBlock();
         }
 
         _blocks.Clear();

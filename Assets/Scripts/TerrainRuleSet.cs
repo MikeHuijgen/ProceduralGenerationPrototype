@@ -4,6 +4,6 @@ using UnityEngine;
 [Serializable]
 public class TerrainRuleSet
 {
-    public GameObject terrainPrefab;
+    public Block terrainPrefab;
     [Range(0,1)]public float ruleHight;
 }
