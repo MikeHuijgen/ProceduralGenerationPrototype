@@ -41,34 +41,43 @@ public class TerrainGenerator : MonoBehaviour
                 var zCoord = (float)z / height * perlinNoiseZoomScale + zOffset;
 
                 var sample = Mathf.PerlinNoise(xCoord, zCoord);
-                var newYMagnitude = sample * generationRuleSet.yMagnitude;
-
+                var newYMagnitude = Mathf.RoundToInt(sample * generationRuleSet.yMagnitude);
 
 
                 var textureColor = new Color(sample,sample,sample);
                 perlinNoiseTexture.SetPixel(x, z ,textureColor);
 
-                var newPos = new Vector3(x, Mathf.RoundToInt(newYMagnitude),z);
-                GameObject newBlock = null;
-
-                foreach (var rule in generationRuleSet.terrainRules)
+                for (int y = newYMagnitude; y > 0; y--)
                 {
-                    if (sample <= rule.ruleHight)
+                    GameObject newBlock = null;
+                    var newPos = new Vector3(x, y, z);
+
+                    if (y == newYMagnitude)
                     {
-                        newBlock = Instantiate(rule.terrainPrefab, newPos, Quaternion.identity);
-                        break;
+                        foreach (var rule in generationRuleSet.terrainRules)
+                        {
+                            if (sample <= rule.ruleHight)
+                            {
+                                newBlock = Instantiate(rule.terrainPrefab, newPos, Quaternion.identity);
+                                break;
+                            }
+                        }                   
                     }
+                    else
+                    {
+                        newBlock = Instantiate(generationRuleSet.underGroundBlock, newPos, Quaternion.identity);    
+                    }
+
+                    _blocks.Add(newBlock);
+                    if (newBlock == null) continue;
+                    newBlock.transform.parent = transform;
                 }
-
-                perlinNoiseTexture.filterMode = FilterMode.Point;
-                perlinNoiseTexture.wrapMode = TextureWrapMode.Clamp;
-                perlinNoiseTexture.Apply();
-
-                _blocks.Add(newBlock);
-                if (newBlock == null) continue;
-                newBlock.transform.parent = transform;
             }
         }
+
+        perlinNoiseTexture.filterMode = FilterMode.Point;
+        perlinNoiseTexture.wrapMode = TextureWrapMode.Clamp;
+        perlinNoiseTexture.Apply();
     }
 
     private void InstantiateTerrainDecoration()

@@ -26,5 +26,6 @@ MonoBehaviour:
     appearanceRate: 0.1
   - decorationPrefab: {fileID: 3196694052689569184, guid: 37dbbe4565b8a844c87a819a46e1a71c, type: 3}
     appearanceRate: 0.5
+  underGroundBlock: {fileID: 3856465850193012739, guid: edfebd56c31406e42a9dbc33e6c7d0f1, type: 3}
   decorationAppearanceAmount: 1
-  yMagnitude: 10
+  yMagnitude: 15

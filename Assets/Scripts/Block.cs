@@ -7,7 +7,8 @@ public class Block : MonoBehaviour
         Grass,
         Sand,
         Water,
-        DeepWater
+        DeepWater,
+        Stone
     }
 
     [SerializeField] private BlockType blockType;
