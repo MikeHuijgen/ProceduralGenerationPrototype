@@ -9,7 +9,7 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private GenerationRuleSet generationRuleSet;
 
 
-    private List<Block> _blocks = new List<Block>();
+    [SerializeField, HideInInspector]private List<Block> _blocks = new List<Block>();
 
     private float xOffset;
     private float zOffset;
