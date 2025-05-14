@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3d71b46766ced840a55d9299137e0da, type: 3}
+  m_Name: RuleSet1 1
+  m_EditorClassIdentifier: 
+  terrainRules:
+  - terrainPrefab: {fileID: 346122379557662213, guid: e2140f7827ab8764c800ef44e3fcb29a, type: 3}
+    ruleHight: 1
+  decorations:
+  - decorationPrefab: {fileID: 2306696188743942548, guid: 613c36a88898c1649bf10fbd6b4abebf, type: 3}
+    appearanceRate: 0.1
+  - decorationPrefab: {fileID: 3196694052689569184, guid: 37dbbe4565b8a844c87a819a46e1a71c, type: 3}
+    appearanceRate: 0.5
+  underGroundBlock: {fileID: 7479204360765091886, guid: edfebd56c31406e42a9dbc33e6c7d0f1, type: 3}
+  decorationAppearanceAmount: 1
+  yMagnitude: 10

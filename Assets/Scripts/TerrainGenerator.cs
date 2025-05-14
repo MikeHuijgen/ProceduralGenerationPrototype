@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    [SerializeField, Range(1,100)] private int width;
-    [SerializeField, Range(1,100)] private int height;
+    [SerializeField, Range(1,50)] private int width;
+    [SerializeField, Range(1,50)] private int height;
     [SerializeField] private float perlinNoiseZoomScale;
     [SerializeField] private GenerationRuleSet generationRuleSet;
 
@@ -47,9 +47,12 @@ public class TerrainGenerator : MonoBehaviour
                 var textureColor = new Color(sample,sample,sample);
                 perlinNoiseTexture.SetPixel(x, z ,textureColor);
 
+                if (sample < 0) sample = 0;
                 var correctBlock = GetCorrectBlockByRuleHeight(sample);
 
-                for (int y = newYMagnitude; y > 0; y--)
+                if (correctBlock == null) continue;
+
+                for (int y = newYMagnitude; y >= 0; y--)
                 {
                     var newPos = new Vector3(x, y, z);
 
@@ -66,6 +69,7 @@ public class TerrainGenerator : MonoBehaviour
                     else
                     {
                         InstantiateBlock(generationRuleSet.underGroundBlock, newPos);
+                        continue;
                     }
                 }
             }
@@ -87,9 +91,10 @@ public class TerrainGenerator : MonoBehaviour
     private Block GetCorrectBlockByRuleHeight(float perlinNoiseSample)
     {
         Block correctBlock = null;
+
         foreach (var rule in generationRuleSet.terrainRules)
         {
-            if (perlinNoiseSample <= rule.ruleHight)
+            if (perlinNoiseSample < rule.ruleHight)
             {
                 correctBlock = rule.terrainPrefab;
                 break;

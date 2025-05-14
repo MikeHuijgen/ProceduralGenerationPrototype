@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrainRules:
   - terrainPrefab: {fileID: 346122379557662213, guid: e2140f7827ab8764c800ef44e3fcb29a, type: 3}
-    ruleHight: 0.1
+    ruleHight: 0.2
   - terrainPrefab: {fileID: 346122379557662213, guid: 8816b24856ee8ff4a9e2ee7cf6346e3c, type: 3}
-    ruleHight: 0.3
+    ruleHight: 0.35
   - terrainPrefab: {fileID: 1032612077950894460, guid: a76940b89db7a7641a6d7e47b9bd3f21, type: 3}
-    ruleHight: 0.4
+    ruleHight: 0.45
   - terrainPrefab: {fileID: 5972991303102782213, guid: d783b1c71a0ad8a48b7c30f7a91d07bc, type: 3}
     ruleHight: 1
   decorations:
@@ -28,4 +28,4 @@ MonoBehaviour:
     appearanceRate: 0.5
   underGroundBlock: {fileID: 7479204360765091886, guid: edfebd56c31406e42a9dbc33e6c7d0f1, type: 3}
   decorationAppearanceAmount: 1
-  yMagnitude: 15
+  yMagnitude: 10
